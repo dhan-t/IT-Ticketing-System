@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: csp-it-ticketing-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-csp_it_ticketing}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-csp_it_ticketing}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: csp-it-ticketing-api
+    working_dir: /app/apps/api
+    command: npx nodemon --exec npx ts-node src/index.ts
+    environment:
+      PORT: ${PORT:-4000}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-csp_it_ticketing}
+      JWT_SECRET: ${JWT_SECRET:-replace_with_a_real_secret}
+    ports:
+      - "${API_PORT:-4000}:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./apps/api:/app/apps/api
+      - /app/node_modules
+      - /app/apps/api/node_modules
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: csp-it-ticketing-web
+    working_dir: /app/apps/web # 1. Force Docker into the web folder
+    command: npm run dev # 2. Start Next.js in development mode
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+      WATCHPACK_POLLING: "true" # 3. Force legacy watch mode for Windows
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/web # 4. Corrected local path
+          target: /app/apps/web # 5. Corrected container path
+          ignore:
+            - node_modules
+            - .next
+        - action: rebuild
+          path: ./apps/web/package.json
+          target: /app/apps/web/package.json
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      - api
+    volumes:
+      - /app/node_modules
+      - /app/apps/web/node_modules
+
+volumes:
+  postgres_data:
