@@ -1,0 +1,13 @@
+{
+  "name": "it-ticketing-system",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down"
+  }
+}
