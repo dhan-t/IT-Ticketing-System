@@ -112,3 +112,12 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 }
+
+export interface AuthUser {
+  id: number;
+  name: string;
+  email: string;
+  role: "end_user" | "dept_member";
+  departmentId: number;
+  departmentName: string;
+}

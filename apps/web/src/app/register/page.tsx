@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
+import { AlertCircle, Loader2, PackageOpen } from "lucide-react";
 
 interface Department {
   id: number;
@@ -55,79 +56,118 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-m-surface-variant px-4 py-12">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white p-8 rounded-lg shadow border border-gray-200"
+        className="w-full max-w-sm bg-m-surface p-8 rounded-m-xl shadow-m-2 border border-m-outline-variant"
       >
-        <h1 className="text-xl font-semibold mb-6">Create account</h1>
+        {/* App Logo / Header section */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 rounded-m-lg bg-m-primary-container flex items-center justify-center shrink-0">
+            <PackageOpen className="w-5 h-5 text-m-on-primary-container" />
+          </div>
+          <h1 className="text-xl font-semibold text-m-on-surface leading-tight">
+            IT Ticketing
+          </h1>
+        </div>
+
+        <h2 className="text-2xl font-medium text-m-on-surface mb-6 leading-tight">
+          Create account
+        </h2>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          <div className="mb-6 flex items-center gap-2 text-sm text-m-on-error-container bg-m-error-container rounded-m-md px-4 py-3">
+            <AlertCircle className="w-4 h-4 shrink-0" />
             {error}
           </div>
         )}
 
-        <label className="block text-sm font-medium mb-1">Name</label>
-        <input
-          type="text"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-sm"
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-m-on-surface-variant mb-1.5">
+            Name
+          </label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-transparent border border-m-outline-variant rounded-m-md px-4 py-2.5 text-sm text-m-on-surface focus:outline-none focus:border-m-primary focus:ring-1 focus:ring-m-primary transition-colors"
+            placeholder="John Doe"
+          />
+        </div>
 
-        <label className="block text-sm font-medium mb-1">Email</label>
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-sm"
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-m-on-surface-variant mb-1.5">
+            Email
+          </label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-transparent border border-m-outline-variant rounded-m-md px-4 py-2.5 text-sm text-m-on-surface focus:outline-none focus:border-m-primary focus:ring-1 focus:ring-m-primary transition-colors"
+            placeholder="name@department.com"
+          />
+        </div>
 
-        <label className="block text-sm font-medium mb-1">Password</label>
-        <input
-          type="password"
-          required
-          minLength={6}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-sm"
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-m-on-surface-variant mb-1.5">
+            Password
+          </label>
+          <input
+            type="password"
+            required
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-transparent border border-m-outline-variant rounded-m-md px-4 py-2.5 text-sm text-m-on-surface focus:outline-none focus:border-m-primary focus:ring-1 focus:ring-m-primary transition-colors"
+            placeholder="••••••••"
+          />
+        </div>
 
-        <label className="block text-sm font-medium mb-1">Department</label>
-        <select
-          required
-          value={departmentId}
-          onChange={(e) => setDepartmentId(Number(e.target.value))}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-sm"
-        >
-          <option value="">Select a department</option>
-          {departments.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-m-on-surface-variant mb-1.5">
+            Department
+          </label>
+          <select
+            required
+            value={departmentId}
+            onChange={(e) => setDepartmentId(Number(e.target.value))}
+            className="w-full bg-transparent border border-m-outline-variant rounded-m-md px-4 py-2.5 text-sm text-m-on-surface focus:outline-none focus:border-m-primary focus:ring-1 focus:ring-m-primary transition-colors appearance-none"
+          >
+            <option value="" disabled>
+              Select a department
             </option>
-          ))}
-        </select>
+            {departments.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <label className="block text-sm font-medium mb-1">Role</label>
-        <select
-          value={role}
-          onChange={(e) =>
-            setRole(e.target.value as "end_user" | "dept_member")
-          }
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-6 text-sm"
-        >
-          <option value="end_user">End User</option>
-          <option value="dept_member">Department Member</option>
-        </select>
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-m-on-surface-variant mb-1.5">
+            Role
+          </label>
+          <select
+            value={role}
+            onChange={(e) =>
+              setRole(e.target.value as "end_user" | "dept_member")
+            }
+            className="w-full bg-transparent border border-m-outline-variant rounded-m-md px-4 py-2.5 text-sm text-m-on-surface focus:outline-none focus:border-m-primary focus:ring-1 focus:ring-m-primary transition-colors appearance-none"
+          >
+            <option value="end_user">End User</option>
+            <option value="dept_member">Department Member</option>
+          </select>
+        </div>
 
-        <label className="flex items-center gap-2 text-sm mb-6">
+        <label className="flex items-center gap-2 text-sm text-m-on-surface-variant mb-8 cursor-pointer">
           <input
             type="checkbox"
             checked={staySignedIn}
             onChange={(e) => setStaySignedIn(e.target.checked)}
+            className="rounded-sm border-m-outline-variant text-m-primary focus:ring-m-primary cursor-pointer"
           />
           Stay signed in
         </label>
@@ -135,14 +175,18 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-black text-white rounded py-2 text-sm font-medium disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 bg-m-primary text-m-on-primary rounded-m-xl px-5 py-2.5 text-sm font-medium shadow-m-1 hover:shadow-m-2 transition-all disabled:opacity-50"
         >
+          {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
           {submitting ? "Creating account..." : "Create account"}
         </button>
 
-        <p className="text-sm text-gray-500 mt-4">
+        <p className="text-sm text-m-on-surface-variant mt-6 text-center">
           Already have an account?{" "}
-          <Link href="/login" className="text-black underline">
+          <Link
+            href="/login"
+            className="text-m-primary font-medium hover:underline"
+          >
             Log in
           </Link>
         </p>

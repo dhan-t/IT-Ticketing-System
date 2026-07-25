@@ -49,6 +49,11 @@ router.post("/register", async (req: Request, res: Response) => {
        RETURNING id, name, email, role, department_id`,
       [name, email, passwordHash, role, departmentId],
     );
+    const deptNameRes = await pool.query<{ name: string }>(
+      "SELECT name FROM departments WHERE id = $1",
+      [departmentId],
+    );
+    const departmentName = deptNameRes.rows[0].name;
 
     const user = result.rows[0];
 
@@ -67,6 +72,7 @@ router.post("/register", async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         departmentId: user.department_id,
+        departmentName,
       },
     });
   } catch (err) {
@@ -90,9 +96,12 @@ router.post("/login", async (req: Request, res: Response) => {
       password_hash: string;
       role: string;
       department_id: number;
+      department_name: string;
     }>(
-      `SELECT id, name, email, password_hash, role, department_id
-       FROM users WHERE email = $1`,
+      `SELECT u.id, u.name, u.email, u.password_hash, u.role, u.department_id, d.name AS department_name
+   FROM users u
+   JOIN departments d ON d.id = u.department_id
+   WHERE u.email = $1`,
       [email],
     );
 
@@ -121,6 +130,7 @@ router.post("/login", async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         departmentId: user.department_id,
+        departmentName: user.department_name,
       },
     });
   } catch (err) {

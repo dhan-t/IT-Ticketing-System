@@ -137,9 +137,6 @@ router.get("/:id", async (req: Request, res: Response) => {
       requester.role === "dept_member" &&
       requester.departmentId === ticket.current_department_id;
 
-    // Access: creator can always view; a dept member can view while it's in
-    // their department. Once it escalates past them, they lose visibility —
-    // flag if you'd rather every department that ever touched it keep access.
     if (!isCreator && !isCurrentDeptMember) {
       return res
         .status(403)
@@ -387,6 +384,29 @@ router.post(
       res.status(500).json({ error: "Database error" });
     } finally {
       client.release();
+    }
+  },
+);
+
+router.get(
+  "/department/history",
+  requireDeptMember,
+  async (req: Request, res: Response) => {
+    const departmentId = req.user!.departmentId;
+
+    try {
+      const result = await pool.query(
+        `${TICKET_SELECT}
+       WHERE t.id IN (
+         SELECT DISTINCT ticket_id FROM ticket_activity_log WHERE to_department_id = $1
+       )
+       ORDER BY t.created_at DESC`,
+        [departmentId],
+      );
+      res.json({ tickets: result.rows });
+    } catch (error) {
+      console.error("Fetch department history error:", error);
+      res.status(500).json({ error: "Database error" });
     }
   },
 );

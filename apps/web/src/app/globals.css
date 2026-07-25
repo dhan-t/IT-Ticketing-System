@@ -32,6 +32,12 @@
   --color-m-outline: #767680;
   --color-m-outline-variant: #c6c5d0;
 
+  /* Error roles */
+  --color-m-on-error: #ffffff;
+  --color-m-error: #ba1a1a;
+  --color-m-error-container: #ffdad6;
+  --color-m-on-error-container: #410002;
+
   /* Shape scale */
   --radius-m-sm: 8px;
   --radius-m-md: 12px;
@@ -48,4 +54,17 @@
 body {
   background-color: var(--color-m-surface);
   color: var(--color-m-on-surface);
+}
+
+/* Hide scrollbar everywhere, keep scrolling functional.
+   Prevents layout shift when content height changes (e.g. switching tabs) */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
