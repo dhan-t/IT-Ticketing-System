@@ -1,17 +1,33 @@
 # CSP IT Ticketing System
 
-A full-stack ticketing application for managing internal IT requests. The project combines a PostgreSQL-backed API with a Next.js frontend and includes seeded demo data for departments, users, ticket types, workflows, and sample tickets.
+A full-stack IT ticketing system built as a monorepo with a TypeScript/Express backend and a Next.js frontend. The project uses PostgreSQL for persistence, JWT-based authentication for protected routes, and Docker Compose for local database setup.
 
 ## Overview
 
 This system supports:
 
-- User registration and login
+- User registration and login with JWT-based authentication
 - Ticket submission by end users
-- Department-based ticket queues for internal staff
+- Department-based queues for department members
 - Ticket assignment and reassignment
 - Pipeline-based escalation between departments
 - Activity logging for each ticket lifecycle event
+
+## Tech Stack
+
+- Backend: Express + TypeScript
+- Frontend: Next.js + TypeScript
+- Database: PostgreSQL
+- Authentication: JWT-based auth
+- Local infrastructure: Docker Compose
+
+## Project Structure
+
+This project is organized as a monorepo with clearly separated application folders:
+
+- `apps/api`: Express + TypeScript backend
+- `apps/web`: Next.js frontend
+- `db`: PostgreSQL initialization scripts and schema setup
 
 ## Prerequisites
 
@@ -80,7 +96,7 @@ Expected response:
 
 ## Seed instructions
 
-The database is initialized by the SQL scripts in the `db/init` folder, but the demo data and sample users are loaded through the API seed script.
+The database is initialized by the SQL scripts in the `db/init` folder, and the demo data is loaded through the API seed script.
 
 Run this after the containers are up:
 
@@ -88,13 +104,12 @@ Run this after the containers are up:
 docker compose exec api npx ts-node src/seed.ts
 ```
 
-This seeds:
+This seeds the database with the required sample data for the take-home prompt:
 
-- Departments
-- Ticket types
-- Ticket workflow pipelines
-- Demo users
-- Sample tickets and activity history
+- 4 departments, including Help Desk, Software Engineering, Infrastructure, and General Operations
+- 8 department members plus 2 end users
+- 3 ticket types with distinct routing pipelines
+- A set of sample tickets in different lifecycle stages, including open, active, escalated, resolved, and closed cases
 
 ### Default seeded credentials
 
