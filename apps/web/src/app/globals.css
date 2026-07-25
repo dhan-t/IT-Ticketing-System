@@ -1,0 +1,51 @@
+@import "tailwindcss";
+@source "../**/*.{ts,tsx}";
+
+@theme {
+  /* Fonts */
+  --font-sans: var(--font-roboto), system-ui, sans-serif;
+  --font-mono: var(--font-roboto-mono), monospace;
+
+  /* Material 3 tonal roles — signal-blue seed */
+  --color-m-primary: #375dfb;
+  --color-m-on-primary: #ffffff;
+  --color-m-primary-container: #dde2ff;
+  --color-m-on-primary-container: #001453;
+
+  --color-m-secondary: #146c5d;
+  --color-m-secondary-container: #a6f2e1;
+  --color-m-on-secondary-container: #00201a;
+
+  --color-m-tertiary: #7a5900;
+  --color-m-tertiary-container: #ffdf9e;
+  --color-m-on-tertiary-container: #271900;
+
+  --color-m-error: #ba1a1a;
+  --color-m-error-container: #ffdad6;
+  --color-m-on-error-container: #410002;
+
+  --color-m-surface: #fbf8ff;
+  --color-m-surface-dim: #dbd9e0;
+  --color-m-surface-variant: #e1e2f5;
+  --color-m-on-surface: #1b1b21;
+  --color-m-on-surface-variant: #46464f;
+  --color-m-outline: #767680;
+  --color-m-outline-variant: #c6c5d0;
+
+  /* Shape scale */
+  --radius-m-sm: 8px;
+  --radius-m-md: 12px;
+  --radius-m-lg: 16px;
+  --radius-m-xl: 28px;
+
+  /* Elevation */
+  --shadow-m-1:
+    0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --shadow-m-2:
+    0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+body {
+  background-color: var(--color-m-surface);
+  color: var(--color-m-on-surface);
+}

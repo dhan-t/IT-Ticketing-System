@@ -1,6 +1,8 @@
 import pool from "./db";
+import { hashPassword } from "./auth";
 
 async function seedDatabase() {
+  const defaultPasswordHash = await hashPassword("password123");
   const client = await pool.connect();
 
   try {
@@ -61,18 +63,17 @@ async function seedDatabase() {
     for (const [name, email, department_id] of userRows) {
       const r = await client.query<{ id: number }>(
         `INSERT INTO users (name, email, password_hash, role, department_id)
-         VALUES ($1, $2, 'password_placeholder', 'dept_member', $3) RETURNING id`,
-        [name, email, department_id],
+   VALUES ($1, $2, $3, 'dept_member', $4) RETURNING id`,
+        [name, email, defaultPasswordHash, department_id],
       );
       userId[email] = r.rows[0].id;
     }
 
-    // End user — lives in General Operations
     const endUserRes = await client.query<{ id: number }>(
       `INSERT INTO users (name, email, password_hash, role, department_id)
-       VALUES ('John End User', 'john@example.com', 'password_placeholder', 'end_user', $1)
-       RETURNING id`,
-      [dept["General Operations"]],
+   VALUES ('John End User', 'john@example.com', $1, 'end_user', $2)
+   RETURNING id`,
+      [defaultPasswordHash, dept["General Operations"]],
     );
     const endUserId = endUserRes.rows[0].id;
     console.log("✓ Users seeded.");
