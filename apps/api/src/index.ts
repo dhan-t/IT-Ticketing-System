@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import ticketRoutes from "./routes/ticketRoutes";
+import devRoutes from "./routes/devRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -12,9 +13,9 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
+app.use("/api/dev", devRoutes);
 app.use("/api", ticketRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-  console.log("Hot reload is workingsssss!");
 });
