@@ -2,57 +2,60 @@
 @source "../**/*.{ts,tsx}";
 
 @theme {
-  /* Fonts */
-  --font-sans: var(--font-roboto), system-ui, sans-serif;
-  --font-mono: var(--font-roboto-mono), monospace;
+  /* Fonts - Prioritizes San Francisco on Apple devices */
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    var(--font-roboto), sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    var(--font-roboto-mono), monospace;
 
-  /* Material 3 tonal roles — signal-blue seed */
-  --color-m-primary: #375dfb;
+  /* iOS System Blue */
+  --color-m-primary: #007aff;
   --color-m-on-primary: #ffffff;
-  --color-m-primary-container: #dde2ff;
-  --color-m-on-primary-container: #001453;
+  --color-m-primary-container: #e5f1ff;
+  --color-m-on-primary-container: #003b7a;
 
-  --color-m-secondary: #146c5d;
-  --color-m-secondary-container: #a6f2e1;
-  --color-m-on-secondary-container: #00201a;
+  /* iOS System Green (Success/Action) */
+  --color-m-secondary: #34c759;
+  --color-m-secondary-container: #ebf9ee;
+  --color-m-on-secondary-container: #135422;
 
-  --color-m-tertiary: #7a5900;
-  --color-m-tertiary-container: #ffdf9e;
-  --color-m-on-tertiary-container: #271900;
+  /* iOS System Orange (Warning/Accent) */
+  --color-m-tertiary: #ff9500;
+  --color-m-tertiary-container: #fff4e5;
+  --color-m-on-tertiary-container: #663b00;
 
-  --color-m-error: #ba1a1a;
-  --color-m-error-container: #ffdad6;
-  --color-m-on-error-container: #410002;
-
-  --color-m-surface: #fbf8ff;
-  --color-m-surface-dim: #dbd9e0;
-  --color-m-surface-variant: #e1e2f5;
-  --color-m-on-surface: #1b1b21;
-  --color-m-on-surface-variant: #46464f;
-  --color-m-outline: #767680;
-  --color-m-outline-variant: #c6c5d0;
-
-  /* Error roles */
+  /* iOS System Red (Destructive) */
+  --color-m-error: #ff3b30;
   --color-m-on-error: #ffffff;
-  --color-m-error: #ba1a1a;
-  --color-m-error-container: #ffdad6;
-  --color-m-on-error-container: #410002;
+  --color-m-error-container: #ffebea;
+  --color-m-on-error-container: #661713;
 
-  /* Shape scale */
-  --radius-m-sm: 8px;
-  --radius-m-md: 12px;
-  --radius-m-lg: 16px;
-  --radius-m-xl: 28px;
+  /* Apple Surface & Grays */
+  --color-m-surface: #ffffff; /* Crisp white backgrounds */
+  --color-m-surface-dim: #e5e5ea;
+  --color-m-surface-variant: #f2f2f7; /* Standard iOS grouped background gray */
+  --color-m-on-surface: #1c1c1e; /* Primary label */
+  --color-m-on-surface-variant: #636366; /* Secondary label */
+  --color-m-outline: #c6c6c8; /* Standard separator */
+  --color-m-outline-variant: #e5e5ea; /* Subtle separator */
 
-  /* Elevation */
-  --shadow-m-1:
-    0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
-  --shadow-m-2:
-    0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  /* Shape scale - Apple uses slightly tighter, uniform corners */
+  --radius-m-sm: 6px;
+  --radius-m-md: 10px;
+  --radius-m-lg: 14px;
+  --radius-m-xl: 20px;
+
+  /* Elevation - Apple uses very soft, diffuse shadows */
+  --shadow-m-1: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-m-2: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 body {
-  background-color: var(--color-m-surface);
+  background-color: var(
+    --color-m-surface-variant
+  ); /* Sets the Apple grouped-gray as the base background */
   color: var(--color-m-on-surface);
 }
 

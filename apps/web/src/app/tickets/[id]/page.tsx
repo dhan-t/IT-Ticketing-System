@@ -107,6 +107,14 @@ export default function TicketDetailPage() {
       .catch(() => {});
   }, [data?.canAct, token, user]);
 
+  const redirectToDashboard = useCallback(
+    (message: string) => {
+      window.alert(message);
+      router.push("/dashboard");
+    },
+    [router],
+  );
+
   async function handleAssign() {
     if (!selectedAssignee) return;
     setBusy(true);
@@ -118,6 +126,7 @@ export default function TicketDetailPage() {
         body: JSON.stringify({ assigneeId: selectedAssignee }),
       });
       await loadTicket();
+      window.dispatchEvent(new Event("ticket-updated"));
       setSelectedAssignee("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to assign ticket");
@@ -135,7 +144,9 @@ export default function TicketDetailPage() {
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({ message: escalateMessage || undefined }),
       });
-      await loadTicket();
+      redirectToDashboard(
+        "Ticket escalated successfully. Returning to the dashboard.",
+      );
       setEscalateMessage("");
     } catch (err) {
       setError(
@@ -162,6 +173,10 @@ export default function TicketDetailPage() {
           headers: { Authorization: `Bearer ${token}` },
           body: JSON.stringify({ message: remark || undefined }), // Uses the remark as the escalate note
         });
+        redirectToDashboard(
+          "Ticket escalated successfully. Returning to the dashboard.",
+        );
+        return;
       } else {
         // Standard status update for Open, In Progress, Resolved, Closed
         await apiFetch(`/tickets/${id}/status`, {
@@ -174,6 +189,7 @@ export default function TicketDetailPage() {
         });
       }
       await loadTicket();
+      window.dispatchEvent(new Event("ticket-updated"));
       setRemark("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update ticket");
@@ -200,6 +216,7 @@ export default function TicketDetailPage() {
         }),
       });
       await loadTicket();
+      window.dispatchEvent(new Event("ticket-updated"));
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to reactivate ticket",

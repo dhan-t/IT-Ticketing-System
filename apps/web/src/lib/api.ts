@@ -1,4 +1,10 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const env = (
+  globalThis as typeof globalThis & {
+    process?: { env?: Record<string, string | undefined> };
+  }
+).process?.env;
+
+const API_URL = env?.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export async function apiFetch<T>(
   path: string,

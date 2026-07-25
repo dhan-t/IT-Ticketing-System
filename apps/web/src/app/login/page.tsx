@@ -42,7 +42,7 @@ export default function LoginPage() {
             <PackageOpen className="w-5 h-5 text-m-on-primary-container" />
           </div>
           <h1 className="text-xl font-semibold text-m-on-surface leading-tight">
-            IT Ticketing
+            I.T.T.S.
           </h1>
         </div>
 

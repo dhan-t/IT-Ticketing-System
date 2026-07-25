@@ -77,7 +77,7 @@ router.get("/mine", async (req: Request, res: Response) => {
   }
 });
 
-// ---- Department queue: unassigned / assigned ----
+// ---- Department queue: active unassigned / assigned tickets only ----
 router.get(
   "/department",
   requireDeptMember,
@@ -87,11 +87,11 @@ router.get(
     try {
       const [unassignedRes, assignedRes] = await Promise.all([
         pool.query(
-          `${TICKET_SELECT} WHERE t.current_department_id = $1 AND t.assigned_to IS NULL ORDER BY t.created_at ASC`,
+          `${TICKET_SELECT} WHERE t.current_department_id = $1 AND t.status IN ('Open', 'In Progress', 'Escalated') AND t.assigned_to IS NULL ORDER BY t.created_at ASC`,
           [departmentId],
         ),
         pool.query(
-          `${TICKET_SELECT} WHERE t.current_department_id = $1 AND t.assigned_to IS NOT NULL ORDER BY t.created_at ASC`,
+          `${TICKET_SELECT} WHERE t.current_department_id = $1 AND t.status IN ('Open', 'In Progress', 'Escalated') AND t.assigned_to IS NOT NULL ORDER BY t.created_at ASC`,
           [departmentId],
         ),
       ]);
@@ -136,8 +136,9 @@ router.get("/:id", async (req: Request, res: Response) => {
     const isCurrentDeptMember =
       requester.role === "dept_member" &&
       requester.departmentId === ticket.current_department_id;
+    const canView = isCreator || isCurrentDeptMember;
 
-    if (!isCreator && !isCurrentDeptMember) {
+    if (!canView) {
       return res
         .status(403)
         .json({ error: "You do not have access to this ticket" });
@@ -397,9 +398,12 @@ router.get(
     try {
       const result = await pool.query(
         `${TICKET_SELECT}
-       WHERE t.id IN (
-         SELECT DISTINCT ticket_id FROM ticket_activity_log WHERE to_department_id = $1
-       )
+       WHERE t.current_department_id = $1
+          OR t.id IN (
+            SELECT DISTINCT ticket_id
+            FROM ticket_activity_log
+            WHERE to_department_id = $1
+          )
        ORDER BY t.created_at DESC`,
         [departmentId],
       );
