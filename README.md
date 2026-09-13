@@ -1,4 +1,4 @@
-# CSP IT Ticketing System
+# IT Ticketing System
 
 A full-stack IT ticketing system built as a monorepo with a TypeScript/Express backend and a Next.js frontend. The project uses PostgreSQL for persistence, JWT-based authentication for protected routes, and Docker Compose for local database setup.
 
